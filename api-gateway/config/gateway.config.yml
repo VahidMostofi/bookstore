@@ -1,0 +1,87 @@
+http:
+  port: 9080
+admin:
+  port: 9876
+  host: localhost
+apiEndpoints:
+  authPublic:
+    paths: 
+      - '/auth/register'
+      - '/auth/login'
+      - '/auth/health'
+  auth:
+    paths:
+      - '/auth*'
+  books:
+    path: '/books*'
+serviceEndpoints:
+  auth:
+    url: 'http://auth:3007'
+  books:
+    url: 'http://books:3009'
+policies:
+  - log
+  - proxy
+  - jwt
+  - request-transformer
+pipelines:
+  authPublicPipeline:
+    apiEndpoints:
+      - authPublic
+    policies:
+      -
+        log:
+          action:
+            message: 'authPublic ${req.method}'
+      -
+        proxy:
+          action:
+            serviceEndpoint: auth
+  ########################################################
+  authPipeline:
+    apiEndpoints:
+      - auth
+    policies:
+      -
+        log:
+          action:
+            message: 'auth ${req.method}'
+      -
+        jwt:
+          action:
+            secretOrPublicKey: 'someKeyIsGoodAndSomeOfThemBNoGEo1ioD!'
+            checkCredentialExistence: false
+      -
+        request-transformer:
+          action:
+            headers:
+              add:
+                user: req.user
+      -
+        proxy:
+          action:
+            serviceEndpoint: auth  
+  ########################################################
+  booksPipeline:
+    apiEndpoints:
+      - books
+    policies:
+      -
+        log:
+          action:
+            message: 'books ${req.method}'
+      -
+        jwt:
+          action:
+            secretOrPublicKey: 'the-secret-key'
+            checkCredentialExistence: false
+      -
+        request-transformer:
+          action:
+            headers:
+              add:
+                user: req.user
+      -
+        proxy:
+          action:
+            serviceEndpoint: books

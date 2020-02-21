@@ -1,0 +1,17 @@
+{
+	"name": "bookstore",
+	"version": "1.0.0",
+	"description": "Book store App",
+	"main": "app.js",
+	"scripts": {
+		"start": "node app.js",
+		"dev": "nodemon app.js"
+	},
+	"dependencies": {
+		"body-parser": "^1.18.2",
+		"express": "^4.16.3",
+		"mongoose": "^5.0.15",
+		"morgan": "^1.9.1"
+	},
+	"license": "ISC"
+}

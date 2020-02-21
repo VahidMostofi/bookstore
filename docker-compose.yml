@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  db:
+    image: mongo:3.4.24-xenial
+    ports:
+      - 27017:27017
+    volumes:
+      - /Users/vahid/Desktop/temp/db:/data/db
+  ################################################
+  gateway:
+    build: './api-gateway'
+    restart: on-failure
+    ports:
+      - "9080:9080"
+    depends_on:
+      - auth
+  ################################################
+  auth:
+    build: './auth-service'
+    ports:
+      - "3007:3007"
+    environment:
+      - MONGODB_URL=mongodb://db:27017/bookstoreDB
+      - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
+      - PORT=3007
+    depends_on:
+      - db
+  ################################################
+  books:
+    build: './book-service'
+    ports:
+      - "3009:3009"
+    environment:
+      - MONGODB_URL=mongodb://db:27017/bookstoreDB
+      - PORT=3009
+    depends_on:
+      - db
+
