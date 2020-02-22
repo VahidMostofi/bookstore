@@ -1,0 +1,1 @@
+~/Desktop/projects/bookstore$ docker -H "tcp://136.159.209.204:2375" stack deploy --compose-file ./docker-compose.yml bookstore

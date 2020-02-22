@@ -2,14 +2,17 @@ version: '3'
 
 services:
   db:
+    container_name: bs_db
     image: mongo:3.4.24-xenial
     ports:
-      - 27017:27017
+      - 27717:27017
     volumes:
-      - /Users/vahid/Desktop/temp/db:/data/db
+      - /data/mongo:/data/db
   ################################################
   gateway:
+    container_name: bs_gw
     build: './api-gateway'
+    image: vahidmostofi/bookstore_gateway
     restart: on-failure
     ports:
       - "9080:9080"
@@ -17,10 +20,13 @@ services:
       - auth
   ################################################
   auth:
+    container_name: bs_auth
     build: './auth-service'
+    image: vahidmostofi/bookstore_auth
     ports:
       - "3007:3007"
     environment:
+      - WorkerCount=3
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
       - PORT=3007
@@ -28,10 +34,13 @@ services:
       - db
   ################################################
   books:
+    container_name: bs_books
+    image: vahidmostofi/bookstore_books
     build: './book-service'
     ports:
       - "3009:3009"
     environment:
+      - WorkerCount=3
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - PORT=3009
     depends_on:

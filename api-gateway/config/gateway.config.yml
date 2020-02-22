@@ -73,7 +73,7 @@ pipelines:
       -
         jwt:
           action:
-            secretOrPublicKey: 'the-secret-key'
+            secretOrPublicKey: 'someKeyIsGoodAndSomeOfThemBNoGEo1ioD!'
             checkCredentialExistence: false
       -
         request-transformer:
