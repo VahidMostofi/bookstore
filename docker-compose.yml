@@ -18,6 +18,16 @@ services:
       - "9080:9080"
     depends_on:
       - auth
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "2"
+          memory: 10G
+        reservations:
+          cpus: "2"
+          memory: 5G
+
   ################################################
   auth:
     container_name: bs_auth
@@ -32,6 +42,15 @@ services:
       - PORT=3007
     depends_on:
       - db
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "2"
+          memory: 10G
+        reservations:
+          cpus: "2"
+          memory: 5G
   ################################################
   books:
     container_name: bs_books
@@ -45,4 +64,12 @@ services:
       - PORT=3009
     depends_on:
       - db
-
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "2"
+          memory: 10G
+        reservations:
+          cpus: "2"
+          memory: 5G
