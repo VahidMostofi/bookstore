@@ -8,6 +8,15 @@ services:
       - 27717:27017
     volumes:
       - /data/mongo:/data/db
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "2"
+          memory: 10G
+        reservations:
+          cpus: "2"
+          memory: 3G
   ################################################
   gateway:
     container_name: bs_gw
@@ -26,8 +35,7 @@ services:
           memory: 10G
         reservations:
           cpus: "2"
-          memory: 5G
-
+          memory: 2G
   ################################################
   auth:
     container_name: bs_auth
@@ -50,7 +58,7 @@ services:
           memory: 10G
         reservations:
           cpus: "2"
-          memory: 5G
+          memory: 2G
   ################################################
   books:
     container_name: bs_books
@@ -72,4 +80,4 @@ services:
           memory: 10G
         reservations:
           cpus: "2"
-          memory: 5G
+          memory: 2G
