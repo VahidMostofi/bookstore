@@ -1,6 +1,13 @@
 version: '3'
 
 services:
+  zipkin:
+    image: openzipkin/zipkin-slim
+    container_name: zipkin
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411:9411
+  ################################################
   db:
     container_name: bs_db
     image: mongo:3.4.24-xenial
@@ -27,14 +34,16 @@ services:
       - "9080:9080"
     depends_on:
       - auth
+    environment: 
+      - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
     deploy:
-      replicas: 2
+      replicas: 3
       resources:
         limits:
-          cpus: "2"
+          cpus: "1"
           memory: 10G
         reservations:
-          cpus: "2"
+          cpus: "1"
           memory: 2G
   ################################################
   auth:
@@ -51,13 +60,13 @@ services:
     depends_on:
       - db
     deploy:
-      replicas: 2
+      replicas: 3
       resources:
         limits:
-          cpus: "2"
+          cpus: "1"
           memory: 10G
         reservations:
-          cpus: "2"
+          cpus: "1"
           memory: 2G
   ################################################
   books:
@@ -76,8 +85,8 @@ services:
       replicas: 2
       resources:
         limits:
-          cpus: "2"
+          cpus: "1"
           memory: 10G
         reservations:
-          cpus: "2"
+          cpus: "1"
           memory: 2G

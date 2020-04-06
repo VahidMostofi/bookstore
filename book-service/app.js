@@ -18,7 +18,15 @@ if (cluster.isMaster) {
 	const morgan = require('morgan');
 	require('./db/db');
 	
-	const app = express();
+	const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
+	const app = express()
+	const CLSContext = require('zipkin-context-cls');
+	const {Tracer} = require('zipkin');
+	const {recorder} = require('./recorder');
+	const ctxImpl = new CLSContext('zipkin');
+	const localServiceName = 'book';
+	const tracer = new Tracer({ctxImpl, recorder: recorder(localServiceName), localServiceName});
+	app.use(zipkinMiddleware({tracer}));
 	app.use(morgan('combined'))
 	app.use(bodyParser.json());
 	app.use("/books", bookRoutes);

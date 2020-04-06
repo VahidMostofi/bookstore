@@ -9,6 +9,7 @@
   "author": "Frank Atukunda",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "cluster": "^0.7.7",
     "express": "^4.17.1",
@@ -16,7 +17,13 @@
     "mongodb": "^3.2.7",
     "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
-    "validator": "^11.0.0"
+    "node-fetch": "^2.6.0",
+    "validator": "^11.0.0",
+    "zipkin": "^0.20.0",
+    "zipkin-context-cls": "^0.20.0",
+    "zipkin-instrumentation-axiosjs": "^0.20.0",
+    "zipkin-instrumentation-express": "^0.20.0",
+    "zipkin-transport-http": "^0.20.0"
   },
   "devDependencies": {
     "env-cmd": "^10.0.1",

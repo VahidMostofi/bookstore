@@ -1,7 +1,7 @@
 FROM node:13.7.0-alpine3.10
-WORKDIR /gateway
-COPY package.json /gateway
+WORKDIR /app
+COPY package.json /app
 RUN npm install
-COPY . /gateway
-CMD npm start
+COPY . /app
+CMD node app.js
 EXPOSE 9080
