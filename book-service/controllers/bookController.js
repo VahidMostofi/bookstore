@@ -1,4 +1,5 @@
 var bookModel = require('../models/bookModel.js');
+const {tracer} = require('../trace_utils');
 
 /**
  * bookController.js
@@ -11,7 +12,9 @@ module.exports = {
      * bookController.list()
      */
     list: function (req, res) {
+        const dbSpan = tracer.startSpan("DB",{childOf:req.span});
         bookModel.find(function (err, books) {
+            dbSpan.finish();
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting book.',
@@ -27,7 +30,9 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
+        const dbSpan = tracer.startSpan("DB",{childOf:req.span});
         bookModel.findOne({_id: id}, function (err, book) {
+            dbSpan.finish();
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting book.',
@@ -58,8 +63,9 @@ module.exports = {
 			created_date : req.body.created_date
 
         });
-
+        const dbSpan = tracer.startSpan("DB",{childOf:req.span});
         book.save(function (err, book) {
+            dbSpan.finish();
             if (err) {
                 return res.status(500).json({
                     message: 'Error when creating book',
@@ -75,7 +81,9 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
+        const dbSpan = tracer.startSpan("DB",{childOf:req.span});
         bookModel.findOne({_id: id}, function (err, book) {
+            dbSpan.finish();
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting book',
@@ -115,7 +123,9 @@ module.exports = {
      */
     remove: function (req, res) {
         var id = req.params.id;
+        const dbSpan = tracer.startSpan("DB",{childOf:req.span});
         bookModel.findByIdAndRemove(id, function (err, book) {
+            dbSpan.finish();
             if (err) {
                 return res.status(500).json({
                     message: 'Error when deleting the book.',

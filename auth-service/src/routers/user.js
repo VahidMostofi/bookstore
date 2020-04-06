@@ -1,34 +1,43 @@
-const express = require('express')
-const User = require('../models/User')
-const auth = require('../middleware/auth')
+const express = require('express');
+const User = require('../models/User');
+const auth = require('../middleware/auth');
+const {trackMiddleware, tracer} = require('../trace_utils');
 
 const router = express.Router()
 
-router.get('/auth/health', async (req,res) => {
-    res.status(200).end()
+router.get('/auth/health', trackMiddleware('heath'), async (req,res) => {
+    res.status(200).end();
 })
 
-router.post('/auth/register', async (req, res) => {
+router.post('/auth/register', trackMiddleware('register'),async (req, res) => {
     // Create a new user
     try {
         const user = new User(req.body)
+        const queryDBSpan = tracer.startSpan("saveDB", {childOf: req.span});
         await user.save()
+        queryDBSpan.finish();
+        const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: req.span});
         const token = await user.generateAuthToken()
+        genTokenSpan.finish();
         res.status(201).send({ user, token })
     } catch (error) {
         res.status(400).send(error)
     }
 })
 
-router.post('/auth/login', async(req, res) => {
+router.post('/auth/login', trackMiddleware('login'), async(req, res) => {
     //Login a registered user
     try {
-        const { email, password } = req.body
+        const { email, password } = req.body;
+        const queryDBSpan = tracer.startSpan("queryDB", {childOf: req.span});
         const user = await User.findByCredentials(email, password)
+        queryDBSpan.finish();
         if (!user) {
             return res.status(401).send({error: 'Login failed! Check authentication credentials'})
         }
+        const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: req.span});
         const token = await user.generateAuthToken()
+        genTokenSpan.finish();
         res.send({ user, token })
     } catch (error) {
         res.status(400).send(error)
@@ -36,11 +45,12 @@ router.post('/auth/login', async(req, res) => {
 
 })
 
+//deprecated need to fixed for tracing and ....
 router.get('/auth/me', auth, async(req, res) => {
     // View logged in user profile
     res.send(req.user)
 })
-
+//deprecated
 router.post('/auth/me/logout', auth, async (req, res) => {
     // Log user out of the application
     try {
@@ -53,7 +63,7 @@ router.post('/auth/me/logout', auth, async (req, res) => {
         res.status(500).send(error)
     }
 })
-
+//deprecated
 router.post('/auth/me/logoutall', auth, async(req, res) => {
     // Log user out of all devices
     try {

@@ -1,30 +1,30 @@
 var express = require('express');
 var router = express.Router();
 var bookController = require('../controllers/bookController.js');
+const {trackMiddleware} = require('../trace_utils');
+/*
+ * GET
+ */
+router.get('/', trackMiddleware("list"), bookController.list);
 
 /*
  * GET
  */
-router.get('/', bookController.list);
-
-/*
- * GET
- */
-router.get('/:id', bookController.show);
+router.get('/:id', trackMiddleware("getone"), bookController.show);
 
 /*
  * POST
  */
-router.post('/', bookController.create);
+router.post('/', trackMiddleware("create"), bookController.create);
 
 /*
  * PUT
  */
-router.put('/:id', bookController.update);
+router.put('/:id', trackMiddleware("update"), bookController.update);
 
 /*
  * DELETE
  */
-router.delete('/:id', bookController.remove);
+router.delete('/:id', trackMiddleware("remove"), bookController.remove);
 
 module.exports = router;
