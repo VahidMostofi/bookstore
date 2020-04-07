@@ -27,22 +27,18 @@ router.post('/auth/register', trackMiddleware('register'),async (req, res) => {
 
 router.post('/auth/login', trackMiddleware('login'), async(req, res) => {
     //Login a registered user
-    try {
-        const { email, password } = req.body;
-        const queryDBSpan = tracer.startSpan("queryDB", {childOf: req.span});
-        const user = await User.findByCredentials(email, password)
+    const { email, password } = req.body;
+    const queryDBSpan = tracer.startSpan("queryDB", {childOf: req.span});
+    User.findByCredentials(email, password, async (err, user)=>{
         queryDBSpan.finish();
-        if (!user) {
+        if (err || !user) {
             return res.status(401).send({error: 'Login failed! Check authentication credentials'})
         }
         const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: req.span});
-        const token = await user.generateAuthToken()
+        const token = user.generateAuthToken();
         genTokenSpan.finish();
-        res.send({ user, token })
-    } catch (error) {
-        res.status(400).send(error)
-    }
-
+        res.send({ user, token });
+    });
 })
 
 //deprecated need to fixed for tracing and ....
