@@ -1,30 +1,30 @@
 var express = require('express');
 var router = express.Router();
 var bookController = require('../controllers/bookController.js');
-const {trackMiddleware} = require('../trace_utils');
+const {trackMiddleware,extractSpanMiddleware} = require('../trace_utils');
 /*
  * GET
  */
-router.get('/', trackMiddleware("list"), bookController.list);
+router.get('/', [trackMiddleware("list"),extractSpanMiddleware], bookController.list);
 
 /*
  * GET
  */
-router.get('/:id', trackMiddleware("getone"), bookController.show);
+router.get('/:id', [trackMiddleware("getone"),extractSpanMiddleware], bookController.show);
 
 /*
  * POST
  */
-router.post('/', trackMiddleware("create"), bookController.create);
+router.post('/', [trackMiddleware("create"),extractSpanMiddleware], bookController.create);
 
 /*
  * PUT
  */
-router.put('/:id', trackMiddleware("update"), bookController.update);
+router.put('/:id', [trackMiddleware("update"),extractSpanMiddleware], bookController.update);
 
 /*
  * DELETE
  */
-router.delete('/:id', trackMiddleware("remove"), bookController.remove);
+router.delete('/:id', [trackMiddleware("remove"),extractSpanMiddleware], bookController.remove);
 
 module.exports = router;

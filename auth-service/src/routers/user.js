@@ -1,15 +1,15 @@
 const express = require('express');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-const {trackMiddleware, tracer} = require('../trace_utils');
+const {trackMiddleware, tracer,extractSpanMiddleware} = require('../trace_utils');
 
 const router = express.Router()
 
-router.get('/auth/health', trackMiddleware('heath'), async (req,res) => {
+router.get('/auth/health', [trackMiddleware('heath'),extractSpanMiddleware], async (req,res) => {
     res.status(200).end();
 })
 
-router.post('/auth/register', trackMiddleware('register'),async (req, res) => {
+router.post('/auth/register', [trackMiddleware('register'),extractSpanMiddleware],async (req, res) => {
     // Create a new user
     try {
         const user = new User(req.body)
@@ -25,7 +25,7 @@ router.post('/auth/register', trackMiddleware('register'),async (req, res) => {
     }
 })
 
-router.post('/auth/login', trackMiddleware('login'), async(req, res) => {
+router.post('/auth/login', [trackMiddleware('login'),extractSpanMiddleware], async(req, res) => {
     //Login a registered user
     const { email, password } = req.body;
     const queryDBSpan = tracer.startSpan("queryDB", {childOf: req.span});
