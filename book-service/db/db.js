@@ -7,7 +7,7 @@ const options = {
 };
 
 let retryCount = 1;
-let maxRetry = 10;
+let maxRetry = 30;
 let waitTime = 1000;
 let connectToDB = () => {
     mongoose.connect(process.env.MONGODB_URL, options)

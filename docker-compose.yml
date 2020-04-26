@@ -11,10 +11,10 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: 3G
+          memory: 8G
         reservations:
-          cpus: "2"
-          memory: 3G
+          cpus: "1"
+          memory: 6G
   ################################################
   db:
     container_name: bs_db
@@ -27,11 +27,11 @@ services:
       replicas: 1
       resources:
         limits:
-          cpus: "2"
+          cpus: "1"
           memory: 10G
         reservations:
-          cpus: "2"
-          memory: 3G
+          cpus: "1"
+          memory: 2G
   ################################################
   gateway:
     container_name: bs_gw
@@ -45,7 +45,7 @@ services:
     environment: 
       - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
     deploy:
-      replicas: 3
+      replicas: 5
       resources:
         limits:
           cpus: "1"
@@ -61,14 +61,14 @@ services:
     ports:
       - "3007:3007"
     environment:
-      - WorkerCount=3
+      - WorkerCount=1
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
       - PORT=3007
     depends_on:
       - db
     deploy:
-      replicas: 3
+      replicas: 5
       resources:
         limits:
           cpus: "1"
@@ -84,13 +84,13 @@ services:
     ports:
       - "3009:3009"
     environment:
-      - WorkerCount=3
+      - WorkerCount=1
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - PORT=3009
     depends_on:
       - db
     deploy:
-      replicas: 2
+      replicas: 5
       resources:
         limits:
           cpus: "1"
