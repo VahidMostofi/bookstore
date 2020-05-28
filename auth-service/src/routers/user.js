@@ -29,8 +29,7 @@ router.post('/auth/login', [trackMiddleware('login'),extractSpanMiddleware], asy
     //Login a registered user
     const { email, password } = req.body;
     const queryDBSpan = tracer.startSpan("queryDB", {childOf: req.span});
-    User.findByCredentials(email, password, async (err, user)=>{
-        queryDBSpan.finish();
+    User.findByCredentials(email, password, queryDBSpan, async (err, user)=>{
         if (err || !user) {
             return res.status(401).send({error: 'Login failed! Check authentication credentials'})
         }

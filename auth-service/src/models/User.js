@@ -50,13 +50,14 @@ userSchema.methods.generateAuthToken = function() {
     while (user.tokens.length > 3){
         user.tokens.pop()
     }
-    user.save()
+    // user.save()
     return token;
 }
 
-userSchema.statics.findByCredentials = async (email, password, cb) => {
+userSchema.statics.findByCredentials = async (email, password, querySpan, cb) => {
     // Search for a user by email and password.
     User.findOne({ email}, async(err, user)=>{
+        querySpan.finish();
         if(err || !user){
             cb(new Error({ error: 'Invalid login credentials' }));
         }else{
