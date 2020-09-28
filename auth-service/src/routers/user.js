@@ -1,15 +1,15 @@
 const express = require('express');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-const {trackMiddleware, tracer,extractSpanMiddleware} = require('../trace_utils');
-
+const {trackMiddleware, tracer} = require('../trace_utils');
+const { FORMAT_HTTP_HEADERS } = require('opentracing');
 const router = express.Router()
 
-router.get('/auth/health', [trackMiddleware('heath'),extractSpanMiddleware], async (req,res) => {
+router.get('/auth/health', [trackMiddleware('heath')], async (req,res) => {
     res.status(200).end();
 })
 
-router.post('/auth/register', [trackMiddleware('register'),extractSpanMiddleware],async (req, res) => {
+router.post('/auth/register', [trackMiddleware('register')],async (req, res) => {
     // Create a new user
     try {
         const user = new User(req.body)
@@ -25,15 +25,17 @@ router.post('/auth/register', [trackMiddleware('register'),extractSpanMiddleware
     }
 })
 
-router.post('/auth/login', [trackMiddleware('login'),extractSpanMiddleware], async(req, res) => {
+router.post('/auth/login', [trackMiddleware('login')], async(req, res) => {
+    const parentSpan = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
     //Login a registered user
     const { email, password } = req.body;
-    const queryDBSpan = tracer.startSpan("queryDB", {childOf: req.span});
-    User.findByCredentials(email, password, queryDBSpan, async (err, user)=>{
+    const queryDBSpan = tracer.startSpan("queryDB", {childOf: parentSpan});
+    User.findByCredentials(email, password, async (err, user)=>{
+        queryDBSpan.finish();
         if (err || !user) {
             return res.status(401).send({error: 'Login failed! Check authentication credentials'})
         }
-        const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: req.span});
+        const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: parentSpan});
         const token = user.generateAuthToken();
         genTokenSpan.finish();
         res.send({ user, token });

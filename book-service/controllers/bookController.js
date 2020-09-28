@@ -1,6 +1,6 @@
 var bookModel = require('../models/bookModel.js');
 const {tracer} = require('../trace_utils');
-
+const { FORMAT_HTTP_HEADERS } = require('opentracing');
 /**
  * bookController.js
  *
@@ -30,7 +30,8 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        const dbSpan = tracer.startSpan("DB",{childOf:req.span});
+        const parentSpan = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
+        const dbSpan = tracer.startSpan("DB",{childOf: parentSpan});
         bookModel.findOne({_id: id}, function (err, book) {
             dbSpan.finish();
             if (err) {
@@ -81,7 +82,8 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
-        const dbSpan = tracer.startSpan("DB",{childOf:req.span});
+        const parentSpan = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
+        const dbSpan = tracer.startSpan("DB",{childOf: parentSpan});
         bookModel.findOne({_id: id}, function (err, book) {
             dbSpan.finish();
             if (err) {

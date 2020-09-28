@@ -43,9 +43,11 @@ services:
     depends_on:
       - auth
     environment: 
+      - WorkerCount=1
       - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
+      - SERVICE_NAME=gateway
     deploy:
-      replicas: 5
+      replicas: 1
       resources:
         limits:
           cpus: "1"
@@ -65,10 +67,11 @@ services:
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
       - PORT=3007
+      - SERVICE_NAME=auth
     depends_on:
       - db
     deploy:
-      replicas: 5
+      replicas: 1
       resources:
         limits:
           cpus: "1"
@@ -87,10 +90,11 @@ services:
       - WorkerCount=1
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - PORT=3009
+      - SERVICE_NAME=books
     depends_on:
       - db
     deploy:
-      replicas: 5
+      replicas: 1
       resources:
         limits:
           cpus: "1"

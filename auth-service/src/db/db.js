@@ -27,4 +27,4 @@ let connectToDB = () => {
     });
 }
 
-connectToDB()
+connectToDB();

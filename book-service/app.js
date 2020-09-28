@@ -18,10 +18,10 @@ if (cluster.isMaster) {
 	const morgan = require('morgan');
 	require('./db/db');
 	
-	const app = express()
-    const {extractSpanMiddleware} = require('./trace_utils');
-    app.use(extractSpanMiddleware);
-	app.use(morgan('combined'))
+	const app = express();
+    const {trackMiddleware} = require('./trace_utils');
+	app.use(trackMiddleware('books'));
+	app.use(morgan('combined'));
 	app.use(bodyParser.json());
 	app.use("/books", bookRoutes);
 	const PORT = process.env.PORT;

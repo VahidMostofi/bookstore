@@ -12,15 +12,15 @@ if (cluster.isMaster) {
         console.log(`worker ${worker.process.pid} died`);
     });
 } else {
-    const express = require('express')
-    const port = process.env.PORT
-    const userRouter = require('./routers/user')
-    const morgan = require('morgan')
+    const express = require('express');
+    const port = process.env.PORT;
+    const userRouter = require('./routers/user');
+    const morgan = require('morgan');
     require('./db/db');
 
-	const app = express()
-    const {extractSpanMiddleware} = require('./trace_utils');
-    app.use(extractSpanMiddleware);
+    const app = express();
+    const {trackMiddleware} = require('./trace_utils');
+    app.use(trackMiddleware("auth"));
     app.use(morgan('combined'));
     app.use(express.json());
     app.use(userRouter);

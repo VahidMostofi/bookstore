@@ -44,8 +44,8 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods.generateAuthToken = function() {
     // Generate an auth token for the user
-    const user = this
-    const token = jwt.sign({_id: user._id}, process.env.JWT_KEY)
+    const user = this;
+    const token = jwt.sign({_id: user._id}, process.env.JWT_KEY);
     user.tokens = user.tokens.concat({token})
     while (user.tokens.length > 3){
         user.tokens.pop()
@@ -54,10 +54,9 @@ userSchema.methods.generateAuthToken = function() {
     return token;
 }
 
-userSchema.statics.findByCredentials = async (email, password, querySpan, cb) => {
+userSchema.statics.findByCredentials = async (email, password, cb) => {
     // Search for a user by email and password.
     User.findOne({ email}, async(err, user)=>{
-        querySpan.finish();
         if(err || !user){
             cb(new Error({ error: 'Invalid login credentials' }));
         }else{
