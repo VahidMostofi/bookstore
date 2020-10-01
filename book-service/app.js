@@ -24,6 +24,9 @@ if (cluster.isMaster) {
 	app.use(morgan('combined'));
 	app.use(bodyParser.json());
 	app.use("/books", bookRoutes);
+	app.get('/health', async (req,res) => {
+		res.status(200).end();
+	});
 	const PORT = process.env.PORT;
 	app.listen(PORT, ()=>{
 		console.log('Started books-service application on port ' + PORT);
