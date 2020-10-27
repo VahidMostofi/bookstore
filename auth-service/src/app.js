@@ -24,6 +24,9 @@ if (cluster.isMaster) {
     app.use(morgan('combined'));
     app.use(express.json());
     app.use(userRouter);
+    app.get('/health', async (req,res) => {
+		res.status(200).end();
+	});
 
     app.listen(port, () => {
         console.log(`Server running on port ${port}`)

@@ -4,4 +4,6 @@ COPY package.json /app
 RUN npm install
 COPY . /app
 CMD node app.js
-EXPOSE 9080
+HEALTHCHECK --interval=5s --timeout=60s --start-period=5s \  
+    CMD node ./healthcheck.js
+EXPOSE 8080

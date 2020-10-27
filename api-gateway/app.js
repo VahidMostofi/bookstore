@@ -13,7 +13,7 @@ if (cluster.isMaster) {
 	});
 } else {
     const express = require('express');
-    const port = process.env.PORT || 9080;
+    const port = process.env.PORT || 8080;
     const routes = require('./gateway_routes');
     const morgan = require('morgan');
     const app = express();
@@ -22,6 +22,9 @@ if (cluster.isMaster) {
     app.use(morgan('combined'));
     app.use(express.json());
     app.use(routes);
+    app.get('/health', async (req,res) => {
+		res.status(200).end();
+	});
     
     app.listen(port, () => {
         console.log(`API GATEWAY on port ${port}`)

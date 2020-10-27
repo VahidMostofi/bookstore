@@ -8,6 +8,9 @@ const { FORMAT_HTTP_HEADERS } = require('opentracing');
 const accessTokenSecret = process.env.JWT_KEY;
 const jwt = require('jsonwebtoken');
 
+const axiosRetry = require('axios-retry');
+
+axiosRetry(axios, { retries: 3 });
 const authenticateJWT = (req, res, next) => {
 
     const parentSpan = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
@@ -33,6 +36,7 @@ const authenticateJWT = (req, res, next) => {
 
 router.post('/auth/register',[trackMiddleware('auth_register')], async (req, res) => {
     let authAPI = axios.create({baseURL:"http://auth:3007"});
+    axiosRetry(authAPI, { retries: 3 });
     authAPI.post(req.path, req.body, req.header)
         .then(resp => {
             res.setHeader('traceId',req.headers['uber-trace-id']);
@@ -136,6 +140,7 @@ router.put('/books/*', [trackMiddleware('update_book'), authenticateJWT], async(
 
 router.get('/books', [trackMiddleware('list_books'), authenticateJWT], async(req, res) => {
     const bookAPI = axios.create({baseURL:"http://books:3009"});
+    axiosRetry(bookAPI, { retries: 3 });
     applyTracingInterceptors(bookAPI, {span: req.span});
     bookAPI.get(req.path, req.body, req.header)
         .then(resp => {

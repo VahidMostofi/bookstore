@@ -1,6 +1,25 @@
 version: '3'
 
 services:
+  reverse:
+    container_name: bs_re
+    build: './nginx'
+    hostname: nginx
+    image: vahidmostofi/bookstore_reverse
+    ports:
+      - "9080:9080"
+    depends_on:
+      - entry
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "1"
+          memory: 10G
+        reservations:
+          cpus: "1"
+          memory: 1G  
+  ################################################
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
@@ -33,13 +52,14 @@ services:
           cpus: "1"
           memory: 2G
   ################################################
-  gateway:
-    container_name: bs_gw
+  entry:
+    hostname: entry
+    container_name: bs_en
     build: './api-gateway'
-    image: vahidmostofi/bookstore_gateway
+    image: vahidmostofi/bookstore_entry
     restart: on-failure
     ports:
-      - "9080:9080"
+      - "8080:8080"
     depends_on:
       - auth
     environment: 
@@ -60,6 +80,7 @@ services:
     container_name: bs_auth
     build: './auth-service'
     image: vahidmostofi/bookstore_auth
+    restart: on-failure
     ports:
       - "3007:3007"
     environment:
@@ -84,6 +105,7 @@ services:
     container_name: bs_books
     image: vahidmostofi/bookstore_books
     build: './book-service'
+    restart: on-failure
     ports:
       - "3009:3009"
     environment:
