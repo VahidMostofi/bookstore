@@ -19,8 +19,6 @@ if (cluster.isMaster) {
     require('./db/db');
 
     const app = express();
-    const {trackMiddleware} = require('./trace_utils');
-    app.use(trackMiddleware("auth"));
     app.use(morgan('combined'));
     app.use(express.json());
     app.use(userRouter);

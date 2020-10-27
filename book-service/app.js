@@ -19,8 +19,6 @@ if (cluster.isMaster) {
 	require('./db/db');
 	
 	const app = express();
-    const {trackMiddleware} = require('./trace_utils');
-	app.use(trackMiddleware('books'));
 	app.use(morgan('combined'));
 	app.use(bodyParser.json());
 	app.use("/books", bookRoutes);

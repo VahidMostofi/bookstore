@@ -17,8 +17,6 @@ if (cluster.isMaster) {
     const routes = require('./gateway_routes');
     const morgan = require('morgan');
     const app = express();
-    const {trackMiddleware} = require('./trace_utils');
-    app.use(trackMiddleware('gateway'));
     app.use(morgan('combined'));
     app.use(express.json());
     app.use(routes);

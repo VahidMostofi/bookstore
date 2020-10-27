@@ -5,7 +5,7 @@ services:
     container_name: bs_re
     build: './nginx'
     hostname: nginx
-    image: vahidmostofi/bookstore_reverse
+    image: vahidmostofi/bookstore_reverse:zerotrace
     ports:
       - "9080:9080"
     depends_on:
@@ -56,7 +56,7 @@ services:
     hostname: entry
     container_name: bs_en
     build: './api-gateway'
-    image: vahidmostofi/bookstore_entry
+    image: vahidmostofi/bookstore_entry:zerotrace
     restart: on-failure
     ports:
       - "8080:8080"
@@ -79,7 +79,7 @@ services:
   auth:
     container_name: bs_auth
     build: './auth-service'
-    image: vahidmostofi/bookstore_auth
+    image: vahidmostofi/bookstore_auth:zerotrace
     restart: on-failure
     ports:
       - "3007:3007"
@@ -103,7 +103,7 @@ services:
   ################################################
   books:
     container_name: bs_books
-    image: vahidmostofi/bookstore_books
+    image: vahidmostofi/bookstore_books:zerotrace
     build: './book-service'
     restart: on-failure
     ports:

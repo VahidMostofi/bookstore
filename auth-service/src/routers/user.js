@@ -1,43 +1,33 @@
 const express = require('express');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-const {trackMiddleware, tracer} = require('../trace_utils');
 const { FORMAT_HTTP_HEADERS } = require('opentracing');
 const router = express.Router()
 
-router.get('/auth/health', [trackMiddleware('heath')], async (req,res) => {
+router.get('/auth/health', async (req,res) => {
     res.status(200).end();
 })
 
-router.post('/auth/register', [trackMiddleware('register')],async (req, res) => {
+router.post('/auth/register', async (req, res) => {
     // Create a new user
     try {
         const user = new User(req.body)
-        const queryDBSpan = tracer.startSpan("saveDB", {childOf: req.span});
         await user.save()
-        queryDBSpan.finish();
-        const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: req.span});
         const token = await user.generateAuthToken()
-        genTokenSpan.finish();
         res.status(201).send({ user, token })
     } catch (error) {
         res.status(400).send(error)
     }
 })
 
-router.post('/auth/login', [trackMiddleware('login')], async(req, res) => {
-    const parentSpan = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
+router.post('/auth/login', async(req, res) => {
     //Login a registered user
     const { email, password } = req.body;
-    const queryDBSpan = tracer.startSpan("queryDB", {childOf: parentSpan});
     User.findByCredentials(email, password, async (err, user)=>{
-        queryDBSpan.finish();
         if (err || !user) {
             return res.status(401).send({error: 'Login failed! Check authentication credentials'})
         }
-        const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: parentSpan});
         const token = user.generateAuthToken();
-        genTokenSpan.finish();
         res.send({ user, token });
     });
 })
