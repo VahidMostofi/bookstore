@@ -1,25 +1,6 @@
 version: '3'
 
 services:
-  reverse:
-    container_name: bs_re
-    build: './nginx'
-    hostname: nginx
-    image: vahidmostofi/bookstore_reverse
-    ports:
-      - "9080:9080"
-    depends_on:
-      - entry
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "1"
-          memory: 10G
-        reservations:
-          cpus: "1"
-          memory: 1G  
-  ################################################
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
@@ -59,7 +40,7 @@ services:
     image: vahidmostofi/bookstore_entry
     restart: on-failure
     ports:
-      - "8080:8080"
+      - "9080:8080"
     depends_on:
       - auth
     environment: 
