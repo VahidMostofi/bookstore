@@ -39,12 +39,16 @@ router.post('/auth/register',[trackMiddleware('auth_register')], async (req, res
     axiosRetry(authAPI, { retries: 3 });
     authAPI.post(req.path, req.body, req.header)
         .then(resp => {
-            res.setHeader('traceId',req.headers['uber-trace-id']);
+            if (req.headers['uber-trace-id']){
+                res.setHeader('traceId',req.headers['uber-trace-id']);
+            }
             res.send(resp.data, resp.status);
             return
         })
         .catch(err=>{
-            res.setHeader('traceId',req.headers['uber-trace-id']);
+            if (req.headers['uber-trace-id']){
+                res.setHeader('traceId',req.headers['uber-trace-id']);
+            }
             res.send(err.response.data, err.response.status);
             return;
         });
@@ -60,13 +64,17 @@ router.post('/auth/login',[trackMiddleware('auth_login')], async(req, res) => {
     axios.post('http://auth:3007/auth/login', req.body, {headers})
     .then((resp)=>{
         callSpan.finish();
-        res.setHeader('traceId',req.headers['uber-trace-id']);
+        if (req.headers['uber-trace-id']){
+            res.setHeader('traceId',req.headers['uber-trace-id']);
+        }
         res.send(resp.data, resp.status);
         return;
     })
     .catch((err)=>{
         callSpan.finish();
-        res.setHeader('traceId',req.headers['uber-trace-id']);
+        if (req.headers['uber-trace-id']){
+            res.setHeader('traceId',req.headers['uber-trace-id']);
+        }
         res.send(err).status(500);
         return;
     });
@@ -104,13 +112,17 @@ router.get('/books/*', [trackMiddleware('get_book'), authenticateJWT], async(req
     axios.get('http://books:3009' + req.path, {headers})
     .then((resp)=>{
         callSpan.finish();
-        res.setHeader('traceId',req.headers['uber-trace-id']);
+        if (req.headers['uber-trace-id']){
+            res.setHeader('traceId',req.headers['uber-trace-id']);
+        }
         res.send(resp.data, resp.status);
         return;
     })
     .catch((err)=>{
         callSpan.finish();
-        res.setHeader('traceId',req.headers['uber-trace-id']);
+        if (req.headers['uber-trace-id']){
+            res.setHeader('traceId',req.headers['uber-trace-id']);
+        }
         res.send(err).status(500);
         return;
     });
@@ -126,13 +138,17 @@ router.put('/books/*', [trackMiddleware('update_book'), authenticateJWT], async(
     axios.put('http://books:3009' + req.path, req.body, {headers})
     .then((resp)=>{
         callSpan.finish();
-        res.setHeader('traceId',req.headers['uber-trace-id']);
+        if (req.headers['uber-trace-id']){
+            res.setHeader('traceId',req.headers['uber-trace-id']);
+        }
         res.send(resp.data, resp.status);
         return;
     })
     .catch((err)=>{
         callSpan.finish();
-        res.setHeader('traceId',req.headers['uber-trace-id']);
+        if (req.headers['uber-trace-id']){
+            res.setHeader('traceId',req.headers['uber-trace-id']);
+        }
         res.send(err).status(500);
         return;
     });
@@ -144,12 +160,16 @@ router.get('/books', [trackMiddleware('list_books'), authenticateJWT], async(req
     applyTracingInterceptors(bookAPI, {span: req.span});
     bookAPI.get(req.path, req.body, req.header)
         .then(resp => {
-            res.setHeader('traceId',req.headers['uber-trace-id']);
+            if (req.headers['uber-trace-id']){
+                res.setHeader('traceId',req.headers['uber-trace-id']);
+            }
             res.send(resp.data, resp.status);
             return;
         })
         .catch(err=>{
-            res.setHeader('traceId',req.headers['uber-trace-id']);
+            if (req.headers['uber-trace-id']){
+                res.setHeader('traceId',req.headers['uber-trace-id']);
+            }
             res.send(err.response.data, err.response.status);
             return;
         });

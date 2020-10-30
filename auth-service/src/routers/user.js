@@ -33,6 +33,10 @@ router.post('/auth/login', [trackMiddleware('login')], async(req, res) => {
     User.findByCredentials(email, password, async (err, user)=>{
         queryDBSpan.finish();
         if (err || !user) {
+            if (err){
+                console.log('login failed with', email, password);
+                console.log(err)
+            }
             return res.status(401).send({error: 'Login failed! Check authentication credentials'})
         }
         const genTokenSpan = tracer.startSpan("generateAuthToken", {childOf: parentSpan});
