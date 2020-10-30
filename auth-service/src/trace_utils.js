@@ -1,16 +1,16 @@
 const { FORMAT_HTTP_HEADERS } = require('opentracing');
 const config = {
-    serviceName: process.env.SERVICE_NAME || 'service-name-not-found',
-    sampler: {
-        type: "const",
-        param: 1
-    },
-    reporter: {
-        collectorEndpoint: "http://jaeger:14268/api/traces",
-        agentHost: "jaeger",
-        agentPort: "6831",
-        logSpans: true
-      }
+  serviceName: process.env.JAEGER_SERVICE_NAME || 'service-name-not-found',
+  sampler: {
+      type: "const",
+      param: parseFloat(process.env.SAMPELLING_PROB)
+  },
+  reporter: {
+      collectorEndpoint: "http://"+process.env.JAEGER_COLLECTOR_HOST+":"+process.env.JAEGER_COLLECTOR_PORT+"/api/traces",
+      agentHost: process.env.JAEGER_AGENT_HOST,
+      agentPort: process.env.JAEGER_AGENT_PORT,
+      logSpans: true
+    }
 }
 const initTracer = require("jaeger-client").initTracer;
 const tracer = initTracer(config);
