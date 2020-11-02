@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   jaeger:
@@ -36,17 +36,22 @@ services:
   entry:
     hostname: entry
     container_name: bs_en
-    build: './api-gateway'
+    build: "./api-gateway"
     image: vahidmostofi/bookstore_entry
     restart: on-failure
     ports:
       - "9080:8080"
     depends_on:
       - auth
-    environment: 
+    environment:
       - WorkerCount=1
       - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
-      - SERVICE_NAME=gateway
+      - JAEGER_SERVICE_NAME=gateway
+      - JAEGER_COLLECTOR_HOST="jaeger-collector"
+      - JAEGER_COLLECTOR_PORT=14268
+      - JAEGER_AGENT_HOST="jaeger-agent"
+      - JAEGER_AGENT_PORT=6831
+      - SAMPELLING_PROB=1
     deploy:
       replicas: 1
       resources:
@@ -59,7 +64,7 @@ services:
   ################################################
   auth:
     container_name: bs_auth
-    build: './auth-service'
+    build: "./auth-service"
     image: vahidmostofi/bookstore_auth
     restart: on-failure
     ports:
@@ -69,7 +74,12 @@ services:
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - JWT_KEY=someKeyIsGoodAndSomeOfThemBNoGEo1ioD!
       - PORT=3007
-      - SERVICE_NAME=auth
+      - JAEGER_SERVICE_NAME=auth
+      - JAEGER_COLLECTOR_HOST="jaeger-collector"
+      - JAEGER_COLLECTOR_PORT=14268
+      - JAEGER_AGENT_HOST="jaeger-agent"
+      - JAEGER_AGENT_PORT=6831
+      - SAMPELLING_PROB=1
     depends_on:
       - db
     deploy:
@@ -85,7 +95,7 @@ services:
   books:
     container_name: bs_books
     image: vahidmostofi/bookstore_books
-    build: './book-service'
+    build: "./book-service"
     restart: on-failure
     ports:
       - "3009:3009"
@@ -93,7 +103,12 @@ services:
       - WorkerCount=1
       - MONGODB_URL=mongodb://db:27017/bookstoreDB
       - PORT=3009
-      - SERVICE_NAME=books
+      - JAEGER_SERVICE_NAME=books
+      - JAEGER_COLLECTOR_HOST="jaeger-collector"
+      - JAEGER_COLLECTOR_PORT=14268
+      - JAEGER_AGENT_HOST="jaeger-agent"
+      - JAEGER_AGENT_PORT=6831
+      - SAMPELLING_PROB=1
     depends_on:
       - db
     deploy:
