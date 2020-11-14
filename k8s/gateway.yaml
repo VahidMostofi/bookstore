@@ -25,15 +25,30 @@ spec:
             - name: JAEGER_SERVICE_NAME
               value: "gateway"
             - name: JAEGER_COLLECTOR_HOST
-              value: "jaeger-collector"
+              valueFrom:
+                configMapKeyRef:
+                  name: jaeger-config
+                  key: JAEGER_COLLECTOR_HOST
             - name: JAEGER_COLLECTOR_PORT
-              value: "14268"
+              valueFrom:
+                configMapKeyRef:
+                  name: jaeger-config
+                  key: JAEGER_COLLECTOR_PORT
             - name: JAEGER_AGENT_HOST
-              value: "jaeger-agent"
+              valueFrom:
+                configMapKeyRef:
+                  name: jaeger-config
+                  key: JAEGER_AGENT_HOST
             - name: JAEGER_AGENT_PORT
-              value: "6831"
+              valueFrom:
+                configMapKeyRef:
+                  name: jaeger-config
+                  key: JAEGER_AGENT_PORT
             - name: SAMPELLING_PROB
-              value: "1"
+              valueFrom:
+                configMapKeyRef:
+                  name: jaeger-config
+                  key: SAMPELLING_PROB
           resources:
             requests:
               memory: "256Mi"
