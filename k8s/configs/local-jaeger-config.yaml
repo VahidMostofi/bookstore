@@ -4,7 +4,7 @@ data:
   JAEGER_COLLECTOR_PORT: "14268"
   JAEGER_AGENT_HOST: "136.159.209.214"
   JAEGER_AGENT_PORT: "6831"
-  SAMPELLING_PROB: "1"
+  SAMPELLING_PROB: "0"
 kind: ConfigMap
 metadata:
   name: jaeger-config

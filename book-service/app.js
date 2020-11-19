@@ -16,6 +16,7 @@ if (cluster.isMaster) {
 	const bodyParser = require('body-parser');
 	const bookRoutes = require('./routes/bookRoutes');
 	const morgan = require('morgan');
+	const mongoose = require('mongoose');
 	require('./db/db');
 	
 	const app = express();
@@ -25,7 +26,11 @@ if (cluster.isMaster) {
 	app.use(bodyParser.json());
 	app.use("/books", bookRoutes);
 	app.get('/health', async (req,res) => {
-		res.status(200).end();
+		if (mongoose.connection.readyState == 1){
+			res.status(200).end();
+		}else{
+			res.status(500).end();
+		}
 	});
 	const PORT = process.env.PORT;
 	app.listen(PORT, ()=>{

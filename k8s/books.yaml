@@ -15,8 +15,18 @@ spec:
       containers:
         - name: app
           image: vahidmostofi/bookstore_books
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3009
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3009
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             - name: WorkerCount
               value: "1"
@@ -53,11 +63,11 @@ spec:
                   key: SAMPELLING_PROB
           resources:
             requests:
-              memory: "256Mi"
-              cpu: 0.25
+              memory: "512Mi"
+              cpu: 1.0
             limits:
-              memory: "256Mi"
-              cpu: 0.25
+              memory: "512Mi"
+              cpu: 1.0
 ---
 apiVersion: v1
 kind: Service

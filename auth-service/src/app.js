@@ -16,6 +16,7 @@ if (cluster.isMaster) {
     const port = process.env.PORT;
     const userRouter = require('./routers/user');
     const morgan = require('morgan');
+    const mongoose = require('mongoose');
     require('./db/db');
 
     const app = express();
@@ -25,7 +26,11 @@ if (cluster.isMaster) {
     app.use(express.json());
     app.use(userRouter);
     app.get('/health', async (req,res) => {
-		res.status(200).end();
+		if (mongoose.connection.readyState == 1){
+			res.status(200).end();
+		}else{
+			res.status(500).end();
+		}
 	});
 
     app.listen(port, () => {
