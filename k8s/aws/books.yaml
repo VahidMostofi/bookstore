@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: vahidmostofi/bookstore_books
+          image: 566488864822.dkr.ecr.us-west-2.amazonaws.com/bookstore_books
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3009
@@ -64,10 +64,10 @@ spec:
           resources:
             requests:
               memory: "512Mi"
-              cpu: 0.5
+              cpu: 0.25
             limits:
               memory: "512Mi"
-              cpu: 0.5
+              cpu: 0.25
 ---
 apiVersion: v1
 kind: Service

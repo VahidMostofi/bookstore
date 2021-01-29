@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookstore-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookstore
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bookstore-gateway
+  http:
+  - name: "login"
+    match:
+    - uri:
+        prefix: /auth/login
+    route:
+    - destination:
+        host: gateway
+        port:
+          number: 9080
+  - name: "books"
+    match:
+    - uri:
+        prefix: /books/
+    route:
+    - destination:
+        host: gateway
+        port:
+          number: 9080

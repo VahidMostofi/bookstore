@@ -1,0 +1,16 @@
+Service:
+  Arn: arn:aws:servicediscovery:us-west-2:566488864822:service/srv-gp7nh7nb2jjr2xjm
+  CreateDate: '2021-01-22T14:18:11.930000-07:00'
+  CreatorRequestId: 3d2eb5ab-b5c3-45e5-acbf-06e60cbe4faf
+  DnsConfig:
+    DnsRecords:
+    - TTL: 300
+      Type: A
+    NamespaceId: ns-yshm5koy7zddxhqf
+    RoutingPolicy: MULTIVALUE
+  HealthCheckCustomConfig:
+    FailureThreshold: 1
+  Id: srv-gp7nh7nb2jjr2xjm
+  Name: ns-yshm5koy7zddxhqf
+  NamespaceId: ns-yshm5koy7zddxhqf
+
