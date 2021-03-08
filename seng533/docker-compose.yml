@@ -3,7 +3,7 @@ version: "3"
 services:
   db:
     container_name: bs_db
-    image: mongo:3.4.24-xenial
+    image: vahidmostofi/bookstore_db
     ports:
       - 27717:27017
     volumes:
