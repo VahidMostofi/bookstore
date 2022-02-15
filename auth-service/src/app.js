@@ -16,7 +16,7 @@ if (cluster.isMaster) {
     const port = process.env.PORT;
     const userRouter = require('./routers/user');
     const morgan = require('morgan');
-    require('./db/db');
+    // require('./db/db');
 
     const app = express();
     app.use(morgan('combined'));

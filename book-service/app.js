@@ -16,9 +16,13 @@ if (cluster.isMaster) {
 	const bodyParser = require('body-parser');
 	const bookRoutes = require('./routes/bookRoutes');
 	const morgan = require('morgan');
-	require('./db/db');
-	
+	const mongoose = require('mongoose');
+	// db = require('./db/inMemDb');
+	// db.connect().then(r => console.log('Mem MongoDB is connected')).catch(e => console.error(e))
+
 	const app = express();
+    // const {trackMiddleware} = require('./trace_utils');
+	// app.use(trackMiddleware('books'));
 	app.use(morgan('combined'));
 	app.use(bodyParser.json());
 	app.use("/books", bookRoutes);

@@ -21,6 +21,7 @@
     "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
     "opentracing": "^0.14.4",
+    "picodb": "^1.0.3",
     "validator": "^11.0.0"
   },
   "devDependencies": {

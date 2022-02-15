@@ -58,6 +58,52 @@ router.post('/auth/login', async(req, res) => {
     });
 });
 
+
+router.get('/auth/metrics', async(req, res) => {
+    const headers = req.headers;
+
+    axios.get('http://auth:3027/metrics', req.body, {headers})
+        .then((resp)=>{
+            res.send(resp.data, resp.status);
+            return;
+        })
+        .catch((err)=>{
+            res.send(err).status(500);
+            return;
+        });
+});
+
+
+router.get('/books/metrics', async(req, res) => {
+    const headers = req.headers;
+
+    axios.get('http://books:3029/metrics', req.body, {headers})
+        .then((resp)=>{
+            res.send(resp.data, resp.status);
+            return;
+        })
+        .catch((err)=>{
+            res.send(err).status(500);
+            return;
+        });
+});
+
+
+router.get('/gateway/metrics', async(req, res) => {
+    const headers = req.headers;
+
+    axios.get('http://gateway:8020/metrics', req.body, {headers})
+        .then((resp)=>{
+            res.send(resp.data, resp.status);
+            return;
+        })
+        .catch((err)=>{
+            res.send(err).status(500);
+            return;
+        });
+});
+
+
 // router.post('/books', [trackMiddleware('create_book'), authenticateJWT], async(req, res) => {
 //     const parentSpan = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
 

@@ -1,5 +1,7 @@
-var bookModel = require('../models/bookModel.js');
-const { FORMAT_HTTP_HEADERS } = require('opentracing');
+var bookModel = require('../models/inMemBookModel.js');
+const {FORMAT_HTTP_HEADERS} = require('opentracing');
+// Converted to in memory DB. Sorry I broke mongo support
+
 /**
  * bookController.js
  *
@@ -7,87 +9,86 @@ const { FORMAT_HTTP_HEADERS } = require('opentracing');
  */
 module.exports = {
 
-    /**
-     * bookController.list()
-     */
-    list: function (req, res) {
-        bookModel.find(function (err, books) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting book.',
-                    error: err
-                });
-            }
-            return res.json(books);
-        });
-    },
+	/**
+	 * bookController.list()
+	 */
+	list: function (req, res) {
+		bookModel.find(function (err, books) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting book.',
+					error: err
+				});
+			}
+			return res.json(books);
+		});
+	},
 
-    /**
-     * bookController.show()
-     */
-    show: function (req, res) {
-        var id = req.params.id;
-        bookModel.findOne({_id: id}, function (err, book) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting book.',
-                    error: err
-                });
-            }
-            if (!book) {
-                return res.status(404).json({
-                    message: 'No such book'
-                });
-            }
-            return res.json(book);
-        });
-    },
+	/**
+	 * bookController.show()
+	 */
+	show: function (req, res) {
+		var id = req.params.id;
+		bookModel.findOne({_id: id}, function (err, book) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting book.',
+					error: err
+				});
+			}
+			if (!book) {
+				return res.status(404).json({
+					message: 'No such book'
+				});
+			}
+			return res.json(book);
+		});
+	},
 
-    /**
-     * bookController.create()
-     */
-    create: function (req, res) {
-        var book = new bookModel({
-			title : req.body.title,
-			description : req.body.description,
-			author : req.body.author,
-			publisher : req.body.publisher,
-			pages : req.body.pages,
-			img_url : req.body.img_url,
-			buy_url : req.body.buy_url,
-			created_date : req.body.created_date
+	/**
+	 * bookController.create()
+	 */
+	create: function (req, res) {
+		const book = {
+			title: req.body.title,
+			description: req.body.description,
+			author: req.body.author,
+			publisher: req.body.publisher,
+			pages: req.body.pages,
+			img_url: req.body.img_url,
+			buy_url: req.body.buy_url,
+			created_date: req.body.created_date
+		};
+		bookModel.save(book, function (err, book) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when creating book',
+					error: err
+				});
+			}
+			return res.status(201).json(book);
+		});
+	},
 
-        });
-        book.save(function (err, book) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating book',
-                    error: err
-                });
-            }
-            return res.status(201).json(book);
-        });
-    },
-
-    /**
-     * bookController.update()
-     */
-    update: function (req, res) {
-        var id = req.params.id;
-        bookModel.findOne({_id: id}, function (err, book) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting book',
-                    error: err
-                });
-            }
-            if (!book) {
-                return res.status(404).json({
-                    message: 'No such book'
-                });
-            }
-
-            book.title = req.body.title ? req.body.title : book.title;
+	/**
+	 * bookController.update()
+	 */
+	update: function (req, res) {
+		var id = req.params.id;
+		bookModel.findOne({_id: id}, function (err, book) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting book',
+					error: err
+				});
+			}
+			if (!book) {
+				return res.status(404).json({
+					message: 'No such book'
+				});
+			}
+			// book = book[0]
+			book.title = req.body.title ? req.body.title : book.title;
 			book.description = req.body.description ? req.body.description : book.description;
 			book.author = req.body.author ? req.body.author : book.author;
 			book.publisher = req.body.publisher ? req.body.publisher : book.publisher;
@@ -95,33 +96,33 @@ module.exports = {
 			book.img_url = req.body.img_url ? req.body.img_url : book.img_url;
 			book.buy_url = req.body.buy_url ? req.body.buy_url : book.buy_url;
 			book.created_date = req.body.created_date ? req.body.created_date : book.created_date;
-			
-            book.save(function (err, book) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when updating book.',
-                        error: err
-                    });
-                }
 
-                return res.json(book);
-            });
-        });
-    },
+			bookModel.updateOne({_id: id}, book, function (err, book) {
+				if (err) {
+					return res.status(500).json({
+						message: 'Error when updating book.',
+						error: err
+					});
+				}
 
-    /**
-     * bookController.remove()
-     */
-    remove: function (req, res) {
-        var id = req.params.id;
-        bookModel.findByIdAndRemove(id, function (err, book) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when deleting the book.',
-                    error: err
-                });
-            }
-            return res.status(204).json();
-        });
-    }
+				return res.json(book);
+			});
+		});
+	},
+
+	/**
+	 * bookController.remove()
+	 */
+	remove: function (req, res) {
+		var id = req.params.id;
+		bookModel.remove({_id: id}, function (err, book) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when deleting the book.',
+					error: err
+				});
+			}
+			return res.status(204).json();
+		});
+	}
 };

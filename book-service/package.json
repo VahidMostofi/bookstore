@@ -14,9 +14,11 @@
 		"express": "^4.16.3",
 		"express-jaeger": "0.0.16",
 		"jaeger-client": "^3.17.2",
+		"mongodb-memory-server": "^8.0.4",
 		"mongoose": "^5.0.15",
 		"morgan": "^1.9.1",
-		"opentracing": "^0.14.4"
+		"opentracing": "^0.14.4",
+		"picodb": "^1.0.3"
 	},
 	"license": "ISC",
 	"devDependencies": {
